@@ -8,13 +8,13 @@ Production-ready default configuration for [Claude Code](https://code.claude.com
 
 ```bash
 cd /path/to/your/project
-bash <(curl -fsSL https://raw.githubusercontent.com/babushkai/claude-code-defaults/main/setup.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/babushkai/claude-code-config/main/setup.sh)
 ```
 
 **Option B — Manual copy**:
 
 ```bash
-git clone https://github.com/babushkai/claude-code-defaults.git /tmp/cc-defaults
+git clone https://github.com/babushkai/claude-code-config.git /tmp/cc-defaults
 cp -rn /tmp/cc-defaults/.claude /path/to/your/project/
 cp -n /tmp/cc-defaults/CLAUDE.md /path/to/your/project/
 ```
@@ -23,7 +23,7 @@ cp -n /tmp/cc-defaults/CLAUDE.md /path/to/your/project/
 
 ```
 .claude/
-├── settings.json                # Permissions: allow safe commands, deny dangerous ones
+├── settings.json                # Permissions + hooks: pre-wired and ready to use
 ├── settings.local.json.example  # Personal overrides template
 ├── rules/
 │   ├── code-style.md            # TypeScript/JS coding standards
@@ -92,68 +92,22 @@ cp .mcp.json.example .mcp.json
 claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 ```
 
-### 5. Enable Hooks
+### 5. Review Hooks
 
-The hooks are included but you need to wire them into settings. Add to `.claude/settings.json` or `.claude/settings.local.json`:
+All hooks are **pre-configured** in `settings.json` and work out of the box:
 
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [{
-          "type": "command",
-          "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-dangerous-commands.sh"
-        }]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [{
-          "type": "command",
-          "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-protected-files.sh"
-        }]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/lint-on-save.sh",
-            "timeout": 30
-          },
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-on-save.sh",
-            "timeout": 30
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [{
-          "type": "command",
-          "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify-completion.sh",
-          "async": true
-        }]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup|resume",
-        "hooks": [{
-          "type": "command",
-          "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/log-session.sh",
-          "async": true
-        }]
-      }
-    ]
-  }
-}
-```
+| Hook | Event | What it does |
+|------|-------|--------------|
+| `block-dangerous-commands.sh` | PreToolUse (Bash) | Blocks `rm -rf`, secrets in CLI, SQL drops |
+| `block-protected-files.sh` | PreToolUse (Edit/Write) | Blocks edits to lock files, generated code |
+| `lint-on-save.sh` | PostToolUse (Edit/Write) | Auto ESLint `--fix` (skips if ESLint not installed) |
+| `format-on-save.sh` | PostToolUse (Edit/Write) | Auto Prettier (skips if no Prettier config) |
+| `notify-completion.sh` | Stop | macOS notification + optional Slack webhook |
+| `log-session.sh` | SessionStart | Audit log to `.claude/logs/sessions.log` |
+
+To **disable** a specific hook, remove its entry from the `hooks` section in `.claude/settings.json`.
+
+To **add Slack notifications**, set the `SLACK_WEBHOOK_URL` environment variable.
 
 ## Skills Reference
 

@@ -2,9 +2,9 @@
 # Claude Code Defaults — Project Setup Script
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/babushkai/claude-code-defaults/main/setup.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/babushkai/claude-code-config/main/setup.sh | bash
 #   — or —
-#   git clone https://github.com/babushkai/claude-code-defaults.git /tmp/cc-defaults
+#   git clone https://github.com/babushkai/claude-code-config.git /tmp/cc-defaults
 #   cd /path/to/your/project && bash /tmp/cc-defaults/setup.sh
 #
 # This script copies the default Claude Code configuration into your project.
@@ -27,9 +27,9 @@ echo ""
 
 # If run via curl (no local clone), clone to temp
 if [ ! -f "$SCRIPT_DIR/CLAUDE.md" ]; then
-  echo -e "${YELLOW}Cloning claude-code-defaults...${NC}"
+  echo -e "${YELLOW}Cloning claude-code-config...${NC}"
   TMPDIR=$(mktemp -d)
-  git clone --depth 1 https://github.com/babushkai/claude-code-defaults.git "$TMPDIR" 2>/dev/null
+  git clone --depth 1 https://github.com/babushkai/claude-code-config.git "$TMPDIR" 2>/dev/null
   SCRIPT_DIR="$TMPDIR"
 fi
 
