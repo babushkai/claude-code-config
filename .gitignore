@@ -1,0 +1,22 @@
+# Claude Code local files (never commit)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
