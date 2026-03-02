@@ -53,17 +53,22 @@ CLAUDE.local.md.example      # Personal settings template
 
 ### 1. Edit CLAUDE.md
 
-Replace placeholders with your project details:
+Replace placeholders with **information Claude can't infer from your source code**. Don't list build commands (Claude reads `package.json`) or directory structure (Claude runs `ls`). Instead, write what's only in your head:
 
 ```markdown
 # Project: my-saas-app
 
-React + Node.js SaaS application with PostgreSQL.
+## Why This Architecture
+- Monorepo for type-safe frontend/backend contracts (reduced bugs from 3/week to 0)
+- Hono over Express for Cloudflare Workers cold start <50ms
 
-## Build & Test Commands
-- `pnpm test` - Run tests
-- `pnpm build` - Build
-...
+## Do NOT Touch
+- `src/legacy/` — 3 enterprise clients depend on this, deprecating Q3 2026
+- Stripe webhook handler — idempotency is critical, past $12K double-charge incident
+
+## Team Workflow
+- No production deploys after Friday 3pm
+- feat/ branches: squash merge, fix/ branches: regular merge
 ```
 
 ### 2. Review Permissions

@@ -7,6 +7,14 @@
     "sentry": {
       "type": "http",
       "url": "https://mcp.sentry.dev/mcp"
+    },
+    "database": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub", "--dsn", "${DB_DSN}"],
+      "env": {
+        "DB_DSN": "${DB_DSN:-postgresql://readonly:pass@localhost:5432/dev}"
+      }
     }
   }
 }
